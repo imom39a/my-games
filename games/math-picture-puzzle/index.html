@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Picture Puzzle 🐼</title>
+    <link rel="stylesheet" href="../shared-styles.css">
+    <style>
+        body { overflow: hidden; }
+        
+        .game-screen {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        
+        .level-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .stats-bar {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: center;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .stat {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        /* Visual Equation */
+        .visual-equation {
+            background: white;
+            padding: 25px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        .grid-container {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+        }
+        .grid {
+            display: inline-grid;
+            gap: 3px;
+            background: #ddd;
+            padding: 3px;
+        }
+        .cell {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+            border-radius: 5px;
+            user-select: none;
+        }
+        .cell.blocked {
+            background: transparent;
+            font-size: 2rem;
+        }
+        .cell.filled {
+            background: #ffe4b5;
+            color: #333;
+        }
+        .cell.empty {
+            background: white;
+            border: 3px solid #ddd;
+            cursor: pointer;
+        }
+        .cell.empty:hover {
+            border-color: #74b9ff;
+        }
+        .cell.active {
+            border: 4px solid #74b9ff;
+            background: #dfe6e9;
+        }
+        .cell.correct {
+            background: #55efc4;
+            border-color: #00b894;
+            animation: pop 0.3s;
+        }
+        @keyframes pop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .cell.wrong {
+            background: #ff7675;
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Number Buttons */
+        .number-pad {
+            background: white;
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .num-btn {
+            padding: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .num-btn:active { transform: scale(0.9); }
+        .num-btn.big {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #55efc4, #00b894);
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .control-btn {
+            padding: 20px 30px;
+            font-size: 2rem;
+            background: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .level-title { font-size: 1.5rem; }
+            .stat { font-size: 1.1rem; }
+            .grid-container { margin-bottom: 25px; padding: 20px; }
+            .cell { width: 45px; height: 45px; font-size: 1.2rem; }
+            .visual-equation { font-size: 1.5rem; padding: 15px; margin-bottom: 15px; }
+            .number-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+            .num-btn { padding: 15px; font-size: 1.5rem; }
+            .number-pad { padding: 15px; margin-bottom: 15px; }
+        }
+        
+        @media (max-width: 600px) {
+            .grid-container { margin-bottom: 20px; padding: 15px; }
+            .cell { width: 38px; height: 38px; font-size: 1rem; }
+            .visual-equation { font-size: 1.2rem; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Difficulty Selection -->
+    <div class="difficulty-screen" id="difficultyScreen">
+        <button class="back-to-home" onclick="window.location.href='../../index.html'">🏠 Home</button>
+        <h1>🐼 Math Picture Puzzle</h1>
+        <p>Choose your level!</p>
+        <button class="diff-btn easy" onclick="startGame('easy')">😊 Easy</button>
+        <button class="diff-btn medium" onclick="startGame('medium')">😎 Medium</button>
+        <button class="diff-btn hard" onclick="startGame('hard')">🤓 Hard</button>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="game-screen" id="gameScreen">
+        <div class="header">
+            <button class="home-btn" onclick="goHome()">🏠 Home</button>
+            <div class="level-title" id="levelTitle">EASY</div>
+            <div style="width: 100px;"></div>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat">⏱️ <span id="timer">00:00</span></div>
+        </div>
+        
+        <div class="visual-equation" id="visualEquation"></div>
+        
+        <div class="grid-container">
+            <div class="grid" id="grid"></div>
+        </div>
+        
+
+        
+        <div class="number-pad">
+            <div class="number-grid" id="numberGrid"></div>
+        </div>
+    </div>
+    
+    <!-- Completion Screen -->
+    <div class="completion-screen" id="completionScreen">
+        <div class="completion-content">
+            <h2>🎉 YOU DID IT! 🎉</h2>
+            <div style="font-size: 5rem; margin: 20px 0;">🎊🌟✨🎈</div>
+            <p id="completionMsg"></p>
+            <button class="play-again-btn" onclick="goHome()">Play Again!</button>
+        </div>
+    </div>
+    
+    <canvas id="confetti"></canvas>
+
+    <script>
+        // ===== CONFIGURATION (Parents can easily modify these) =====
+        const ANIMALS = ['🐼', '🐯', '🐸', '🦁', '🐨', '🐰', '🐻', '🦊'];
+        const SLEEPING_ANIMALS = ['😴', '💤', '🌙'];
+        
+        const DIFFICULTY_CONFIG = {
+            easy: {
+                gridSize: 5,
+                maxNum: 10,
+                maxAnswer: 15,
+                operations: ['+', '-'],
+                problemCount: 6
+            },
+            medium: {
+                gridSize: 6,
+                maxNum: 20,
+                maxAnswer: 30,
+                operations: ['+', '-', '×'],
+                problemCount: 8,
+                multiplyBy: [2, 5, 10] // Only easy multiplication
+            },
+            hard: {
+                gridSize: 7,
+                maxNum: 10,
+                maxAnswer: 100,
+                operations: ['+', '-', '×', '÷'],
+                problemCount: 10
+            }
+        };
+        
+        
+        // ===== GAME STATE =====
+        let currentDifficulty = 'easy';
+        let grid = [];
+        let problems = [];
+        let currentProblemIndex = 0;
+        let startTime = null;
+        let timerInterval = null;
+        
+        // ===== INITIALIZATION =====
+        function goHome() {
+            document.getElementById('difficultyScreen').style.display = 'block';
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('completionScreen').style.display = 'none';
+            if (timerInterval) clearInterval(timerInterval);
+        }
+        
+        function startGame(difficulty) {
+            currentDifficulty = difficulty;
+            currentProblemIndex = 0;
+            startTime = null;
+            
+            document.getElementById('difficultyScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('completionScreen').style.display = 'none';
+            document.getElementById('levelTitle').textContent = difficulty.toUpperCase();
+            
+            generatePuzzle();
+            renderGrid();
+            renderNumberPad();
+            showCurrentProblem();
+        }
+        
+        // ===== PUZZLE GENERATION =====
+        function generatePuzzle() {
+            const config = DIFFICULTY_CONFIG[currentDifficulty];
+            const size = config.gridSize;
+            
+            // Initialize empty grid
+            grid = Array(size).fill().map(() => Array(size).fill(null));
+            problems = [];
+            
+            // Place problems
+            let placed = 0;
+            let attempts = 0;
+            
+            while (placed < config.problemCount && attempts < 200) {
+                attempts++;
+                const isHorizontal = Math.random() > 0.5;
+                const row = Math.floor(Math.random() * size);
+                const col = Math.floor(Math.random() * size);
+                
+                if (canPlaceProblem(row, col, isHorizontal, size)) {
+                    const problem = generateProblem(config);
+                    placeProblem(row, col, isHorizontal, problem);
+                    placed++;
+                }
+            }
+            
+            // Fill remaining cells with animals or blocked
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    if (!grid[r][c]) {
+                        grid[r][c] = {
+                            type: 'blocked',
+                            value: SLEEPING_ANIMALS[Math.floor(Math.random() * SLEEPING_ANIMALS.length)]
+                        };
+                    }
+                }
+            }
+        }
+        
+        function canPlaceProblem(row, col, isHorizontal, size) {
+            const length = 5; // num op num = answer
+            
+            for (let i = 0; i < length; i++) {
+                const r = isHorizontal ? row : row + i;
+                const c = isHorizontal ? col + i : col;
+                
+                if (r >= size || c >= size || grid[r][c]) return false;
+            }
+            return true;
+        }
+        
+        function generateProblem(config) {
+            const op = config.operations[Math.floor(Math.random() * config.operations.length)];
+            let num1, num2, answer;
+            
+            if (op === '+') {
+                num1 = Math.floor(Math.random() * config.maxNum) + 1;
+                num2 = Math.floor(Math.random() * config.maxNum) + 1;
+                answer = num1 + num2;
+            } else if (op === '-') {
+                num1 = Math.floor(Math.random() * config.maxNum) + 5;
+                num2 = Math.floor(Math.random() * num1) + 1;
+                answer = num1 - num2;
+            } else if (op === '×') {
+                if (config.multiplyBy) {
+                    num1 = config.multiplyBy[Math.floor(Math.random() * config.multiplyBy.length)];
+                    num2 = Math.floor(Math.random() * 5) + 1;
+                } else {
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                }
+                answer = num1 * num2;
+            } else if (op === '÷') {
+                num2 = Math.floor(Math.random() * 10) + 1;
+                answer = Math.floor(Math.random() * 10) + 1;
+                num1 = num2 * answer;
+            }
+            
+            return { num1, num2, op, answer };
+        }
+        
+        function placeProblem(row, col, isHorizontal, problem) {
+            const cells = [
+                { type: 'filled', value: problem.num1 },
+                { type: 'filled', value: problem.op },
+                { type: 'filled', value: problem.num2 },
+                { type: 'filled', value: '=' },
+                { type: 'empty', answer: problem.answer, row, col: isHorizontal ? col + 4 : col }
+            ];
+            
+            for (let i = 0; i < cells.length; i++) {
+                const r = isHorizontal ? row : row + i;
+                const c = isHorizontal ? col + i : col;
+                grid[r][c] = cells[i];
+                
+                if (cells[i].type === 'empty') {
+                    problems.push({
+                        ...problem,
+                        row: r,
+                        col: c
+                    });
+                }
+            }
+        }
+        
+        // ===== RENDERING =====
+        function renderGrid() {
+            const gridEl = document.getElementById('grid');
+            const size = DIFFICULTY_CONFIG[currentDifficulty].gridSize;
+            
+            const isMobile = window.innerWidth <= 768;
+            const cellSize = isMobile ? (window.innerWidth <= 600 ? 38 : 45) : 55;
+            
+            gridEl.innerHTML = '';
+            gridEl.style.gridTemplateColumns = `repeat(${size}, ${cellSize}px)`;
+            
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    const cell = document.createElement('div');
+                    const data = grid[r][c];
+                    
+                    if (!data) {
+                        cell.className = 'cell blocked';
+                    } else if (data.type === 'blocked') {
+                        cell.className = 'cell blocked';
+                        cell.textContent = data.value;
+                    } else if (data.type === 'empty') {
+                        cell.className = 'cell empty';
+                        cell.textContent = '❓';
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
+                        cell.onclick = () => selectCell(r, c);
+                    } else {
+                        cell.className = 'cell filled';
+                        cell.textContent = data.value;
+                    }
+                    
+                    gridEl.appendChild(cell);
+                }
+            }
+        }
+        
+        function renderNumberPad() {
+            const gridEl = document.getElementById('numberGrid');
+            
+            gridEl.innerHTML = '';
+            
+            // Only show the actual answers needed
+            const answers = [...new Set(problems.map(p => p.answer))].sort((a, b) => a - b);
+            
+            answers.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'num-btn big';
+                btn.textContent = num;
+                btn.onclick = () => submitAnswer(num);
+                gridEl.appendChild(btn);
+            });
+        }
+        
+        // ===== GAME FLOW =====
+        function showCurrentProblem() {
+            if (currentProblemIndex >= problems.length) {
+                completePuzzle();
+                return;
+            }
+            
+            // Start timer on first problem
+            if (currentProblemIndex === 0 && !startTime) {
+                startTime = Date.now();
+                startTimer();
+            }
+            
+            const problem = problems[currentProblemIndex];
+            
+            // Highlight active cell
+            document.querySelectorAll('.cell.empty').forEach(c => c.classList.remove('active'));
+            const activeCell = document.querySelector(`[data-row="${problem.row}"][data-col="${problem.col}"]`);
+            if (activeCell) activeCell.classList.add('active');
+            
+            showVisualEquation(problem);
+        }
+        
+        function selectCell(row, col) {
+            const problemIndex = problems.findIndex(p => p.row === row && p.col === col);
+            if (problemIndex !== -1 && !problems[problemIndex].solved) {
+                currentProblemIndex = problemIndex;
+                showCurrentProblem();
+            }
+        }
+        
+        function submitAnswer(value) {
+            const problem = problems[currentProblemIndex];
+            const cellEl = document.querySelector(`[data-row="${problem.row}"][data-col="${problem.col}"]`);
+            
+            if (value === problem.answer) {
+                // CORRECT!
+                cellEl.textContent = value;
+                cellEl.classList.remove('active');
+                cellEl.classList.add('correct');
+                cellEl.onclick = null;
+                problem.solved = true;
+                
+                playSound('correct');
+                showConfetti();
+                
+                setTimeout(() => {
+                    currentProblemIndex++;
+                    showCurrentProblem();
+                }, 2000);
+                
+            } else {
+                // WRONG - teach the answer
+                cellEl.classList.add('wrong');
+                playSound('wrong');
+                
+                // Show correct answer briefly
+                setTimeout(() => {
+                    cellEl.classList.remove('wrong');
+                    cellEl.textContent = problem.answer;
+                    
+                    setTimeout(() => {
+                        cellEl.textContent = '❓';
+                    }, 3000);
+                }, 500);
+            }
+        }
+        
+        function showVisualEquation(problem) {
+            const eq = document.getElementById('visualEquation');
+            eq.style.display = 'block';
+            
+            // Show with fruit emojis for visual learners
+            const fruit = '🍎';
+            eq.innerHTML = `${fruit.repeat(Math.min(problem.num1, 10))} ${problem.op} ${fruit.repeat(Math.min(problem.num2, 10))} = ❓`;
+        }
+        
+        function getOpWord(op) {
+            const words = { '+': 'plus', '-': 'minus', '×': 'times', '÷': 'divided by' };
+            return words[op] || op;
+        }
+        
+        // ===== SOUNDS =====
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'correct') {
+                oscillator.frequency.value = 523.25;
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                oscillator.frequency.value = 200;
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }
+        }
+        
+        // ===== TIMER =====
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const mins = Math.floor(elapsed / 60);
+                const secs = elapsed % 60;
+                document.getElementById('timer').textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // ===== COMPLETION =====
+        function completePuzzle() {
+            clearInterval(timerInterval);
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const mins = Math.floor(elapsed / 60);
+            const secs = elapsed % 60;
+            
+            document.getElementById('completionMsg').textContent = 
+                `Amazing! You finished in ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}!`;
+            document.getElementById('completionScreen').style.display = 'flex';
+            
+            showBigConfetti();
+            
+            const stats = JSON.parse(localStorage.getItem('mathPuzzleStats') || '{}');
+            stats[currentDifficulty] = stats[currentDifficulty] || { best: Infinity, count: 0 };
+            stats[currentDifficulty].count++;
+            if (elapsed < stats[currentDifficulty].best) {
+                stats[currentDifficulty].best = elapsed;
+            }
+            localStorage.setItem('mathPuzzleStats', JSON.stringify(stats));
+        }
+        
+        // ===== CONFETTI =====
+        function showConfetti() {
+            const canvas = document.getElementById('confetti');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+            
+            const particles = [];
+            for (let i = 0; i < 30; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 4 + 2,
+                    color: ['#55efc4', '#74b9ff', '#fdcb6e', '#fd79a8', '#a29bfe'][Math.floor(Math.random() * 5)],
+                    vx: Math.random() * 2 - 1,
+                    vy: Math.random() * 3 + 2
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.1;
+                });
+                
+                if (particles.some(p => p.y < canvas.height)) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            
+            animate();
+        }
+        
+        function showBigConfetti() {
+            const canvas = document.getElementById('confetti');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+            
+            const particles = [];
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 8 + 3,
+                    color: ['#55efc4', '#74b9ff', '#fdcb6e', '#fd79a8', '#a29bfe', '#ffeaa7'][Math.floor(Math.random() * 6)],
+                    vx: Math.random() * 4 - 2,
+                    vy: Math.random() * 5 + 3
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.15;
+                });
+                
+                if (particles.some(p => p.y < canvas.height)) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            
+            animate();
+        }
+        
+        // ===== KEYBOARD SUPPORT =====
+        document.addEventListener('keydown', (e) => {
+            const num = parseInt(e.key);
+            if (!isNaN(num) && num >= 0 && num <= 20) {
+                submitAnswer(num);
+            }
+        });
+    </script>
+</body>
+</html>

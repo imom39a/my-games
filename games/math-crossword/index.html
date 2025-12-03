@@ -6,132 +6,33 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Math Crossword</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared-styles.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
-            font-family: 'Fredoka', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            -webkit-tap-highlight-color: transparent;
+            overflow: hidden;
         }
         
-        /* Difficulty Selection Screen */
-        .difficulty-screen {
-            text-align: center;
-            padding: 20px;
-            position: relative;
-        }
-        .back-to-games {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 12px 24px;
-            background: white;
-            color: #667eea;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            touch-action: manipulation;
-        }
-        .difficulty-screen h1 {
-            color: white;
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .difficulty-screen p {
-            color: white;
-            font-size: 1.5rem;
-            margin-bottom: 40px;
-        }
-        .difficulty-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .diff-select-btn {
-            padding: 30px;
-            font-size: 2rem;
-            font-weight: 600;
-            background: white;
-            color: #667eea;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-            touch-action: manipulation;
-        }
-        .diff-select-btn:active {
-            transform: scale(0.95);
-        }
-        .diff-select-btn.easy {
-            background: #4caf50;
-            color: white;
-        }
-        .diff-select-btn.medium {
-            background: #ff9800;
-            color: white;
-        }
-        .diff-select-btn.hard {
-            background: #f44336;
-            color: white;
-        }
-        
-        /* Game Screen */
         .game-screen {
             display: none;
             width: 100%;
             padding: 10px;
+            height: 100vh;
+            overflow-y: auto;
         }
-        .header {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .home-btn {
-            padding: 12px 24px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: 600;
-            touch-action: manipulation;
-        }
+        
         .level-title {
             font-size: 2rem;
             font-weight: 600;
             color: #333;
         }
+        
         .stats-bar {
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto 15px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             padding: 15px 25px;
             background: white;
             border-radius: 20px;
@@ -143,7 +44,7 @@
             color: #666;
         }
         .grid-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto 20px;
             background: white;
             padding: 25px;
@@ -185,19 +86,19 @@
             touch-action: manipulation;
         }
         .cell.empty:hover {
-            border-color: #667eea;
+            border-color: #74b9ff;
         }
         .cell.selected {
-            border: 4px solid #667eea;
-            background: #e3f2fd;
+            border: 4px solid #74b9ff;
+            background: #dfe6e9;
         }
         .cell.correct {
-            background: #c8e6c9;
-            border-color: #4caf50;
+            background: #55efc4;
+            border-color: #00b894;
             animation: pop 0.3s;
         }
         .cell.wrong {
-            background: #ffcdd2;
+            background: #ff7675;
             animation: shake 0.5s;
         }
         @keyframes pop {
@@ -211,7 +112,7 @@
         }
         .answers-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             padding: 25px;
@@ -227,9 +128,9 @@
             padding: 25px 15px;
             font-size: 1.8rem;
             font-weight: 600;
-            background: white;
-            color: #4caf50;
-            border: 3px solid #4caf50;
+            background: #55efc4;
+            color: #00b894;
+            border: none;
             border-radius: 20px;
             cursor: pointer;
             touch-action: manipulation;
@@ -238,11 +139,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .answer-btn:active {
             transform: scale(0.95);
-            background: #4caf50;
-            color: white;
         }
         .answer-btn.used {
             opacity: 0.2;
@@ -267,7 +167,7 @@
         }
         .celebration h2 {
             font-size: 3rem;
-            color: #4caf50;
+            color: #00b894;
             margin-bottom: 25px;
         }
         .celebration p {
@@ -283,77 +183,40 @@
             border-radius: 25px;
             cursor: pointer;
             touch-action: manipulation;
-            background: #4caf50;
-            color: white;
+            background: #55efc4;
+            color: #00b894;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 999;
-        }
+        
         @media (max-width: 768px) {
-            .difficulty-screen h1 {
-                font-size: 2.5rem;
-            }
-            .diff-select-btn {
-                font-size: 1.8rem;
-                padding: 25px;
-            }
-            .grid-container {
-                margin-bottom: 25px;
-                padding: 20px;
-            }
-            .cell {
-                width: 45px;
-                height: 45px;
-                font-size: 1.2rem;
-            }
-            .level-title {
-                font-size: 1.5rem;
-            }
-            .stat {
-                font-size: 1.1rem;
-            }
-            .answer-btn {
-                padding: 20px 12px;
-                font-size: 1.5rem;
-                min-height: 60px;
-            }
+            .level-title { font-size: 1.5rem; }
+            .stat { font-size: 1.1rem; }
+            .grid-container { margin-bottom: 25px; padding: 20px; }
+            .cell { width: 45px; height: 45px; font-size: 1.2rem; }
+            .answer-btn { padding: 20px 12px; font-size: 1.5rem; min-height: 60px; }
         }
         @media (max-width: 600px) {
-            .grid-container {
-                margin-bottom: 20px;
-                padding: 15px;
-            }
-            .cell {
-                width: 38px;
-                height: 38px;
-                font-size: 1rem;
-            }
-            .answers-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
+            .grid-container { margin-bottom: 20px; padding: 15px; }
+            .cell { width: 38px; height: 38px; font-size: 1rem; }
+            .answers-grid { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
 <body>
     <!-- Difficulty Selection Screen -->
     <div class="difficulty-screen" id="difficultyScreen">
-        <button class="back-to-games" onclick="window.location.href='../../index.html'">← All Games</button>
+        <button class="back-to-home" onclick="window.location.href='../../index.html'">🏠 Home</button>
         <h1>🔢 Math Crossword</h1>
         <p>Choose your level!</p>
         <div class="difficulty-buttons">
-            <button class="diff-select-btn easy" onclick="startGame('easy')">
-                😊 Easy<br><small style="font-size: 1.2rem;">10 problems</small>
+            <button class="diff-btn easy" onclick="startGame('easy')">
+                😊 Easy
             </button>
-            <button class="diff-select-btn medium" onclick="startGame('medium')">
-                😎 Medium<br><small style="font-size: 1.2rem;">15 problems</small>
+            <button class="diff-btn medium" onclick="startGame('medium')">
+                😎 Medium
             </button>
-            <button class="diff-select-btn hard" onclick="startGame('hard')">
-                🤓 Hard<br><small style="font-size: 1.2rem;">25 problems</small>
+            <button class="diff-btn hard" onclick="startGame('hard')">
+                🤓 Hard
             </button>
         </div>
     </div>
@@ -367,7 +230,6 @@
         </div>
         
         <div class="stats-bar">
-            <div class="stat">❌ <span id="mistakes">0</span>/3</div>
             <div class="stat">⏱️ <span id="timer">00:00</span></div>
         </div>
         
@@ -399,7 +261,6 @@
         let grid = [];
         let emptyCells = [];
         let selectedCell = null;
-        let mistakes = 0;
         let startTime = null;
         let timerInterval = null;
         let answerOptions = [];
@@ -413,13 +274,11 @@
         
         function startGame(difficulty) {
             currentDifficulty = difficulty;
-            mistakes = 0;
             startTime = Date.now();
             
             document.getElementById('difficultyScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
             document.getElementById('levelTitle').textContent = difficulty.toUpperCase();
-            document.getElementById('mistakes').textContent = '0';
             document.getElementById('celebration').classList.remove('show');
             
             generatePuzzle();
@@ -454,17 +313,7 @@
             
             // Generate answer options
             const correctAnswers = emptyCells.map(c => c.answer);
-            answerOptions = [...correctAnswers];
-            
-            // Add wrong answers
-            const totalOptions = Math.min(20, config.maxProblems + 10);
-            while (answerOptions.length < totalOptions) {
-                const wrong = Math.floor(Math.random() * (config.range * 3)) + 1;
-                if (!answerOptions.includes(wrong)) {
-                    answerOptions.push(wrong);
-                }
-            }
-            
+            answerOptions = [...new Set(correctAnswers)];
             answerOptions.sort((a, b) => a - b);
             
             renderGrid(size);
@@ -600,19 +449,10 @@
             } else {
                 cellEl.classList.add('wrong');
                 playSound('wrong');
-                mistakes++;
-                document.getElementById('mistakes').textContent = mistakes;
                 
                 setTimeout(() => {
                     cellEl.classList.remove('wrong');
                 }, 500);
-                
-                if (mistakes >= 3) {
-                    setTimeout(() => {
-                        alert('Too many mistakes! Try again! 😊');
-                        startGame(currentDifficulty);
-                    }, 500);
-                }
             }
         }
         
@@ -684,7 +524,7 @@
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height - canvas.height,
                     r: Math.random() * 6 + 2,
-                    color: ['#667eea', '#764ba2', '#4caf50', '#ffc107', '#f44336'][Math.floor(Math.random() * 5)],
+                    color: ['#ffeaa7', '#fab1a0', '#a29bfe', '#55efc4', '#fdcb6e', '#fd79a8'][Math.floor(Math.random() * 6)],
                     vx: Math.random() * 2 - 1,
                     vy: Math.random() * 3 + 2
                 });

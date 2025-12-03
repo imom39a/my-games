@@ -1,0 +1,11 @@
+{
+  "name": "my-games",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node test-responsive.js",
+    "test:visual": "node test-visual.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.40.0"
+  }
+}
