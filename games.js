@@ -1,7 +1,7 @@
 const games = [
     {
         name: "Math Crossword",
-        icon: "🧮",
+        icon: "🔢",
         description: "Solve fun math puzzles!",
         url: "games/math-crossword/index.html"
     },
