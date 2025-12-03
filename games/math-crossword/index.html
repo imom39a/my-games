@@ -15,119 +15,108 @@
         }
         body {
             font-family: 'Fredoka', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f5f5;
             min-height: 100vh;
             padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
-        .back-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 10px 20px;
-            background: white;
-            color: #667eea;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            z-index: 100;
-            touch-action: manipulation;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 15px;
-            max-width: 900px;
+        .header {
             width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin-top: 50px;
-        }
-        h1 {
-            text-align: center;
-            color: #667eea;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-        .difficulty-selector {
+            max-width: 600px;
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .diff-btn {
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            border: 3px solid #667eea;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
             background: white;
-            color: #667eea;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            touch-action: manipulation;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .diff-btn.active {
+        .back-btn {
+            padding: 8px 16px;
             background: #667eea;
             color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            touch-action: manipulation;
         }
-        .stats {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            color: #666;
-        }
-        .current-clue {
-            background: #fff3cd;
-            border: 3px solid #ffc107;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
+        .level-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #856404;
-            min-height: 60px;
+            color: #333;
+        }
+        .settings-btn {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            touch-action: manipulation;
+        }
+        .stats-bar {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .stat {
+            font-size: 1rem;
+            color: #666;
         }
         .grid-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
         .grid {
             display: inline-grid;
-            gap: 3px;
+            gap: 2px;
             background: #ddd;
-            padding: 3px;
-            border-radius: 10px;
+            padding: 2px;
         }
         .cell {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            border-radius: 5px;
-            cursor: pointer;
-            touch-action: manipulation;
+            border-radius: 3px;
             user-select: none;
         }
         .cell.black {
-            background: #333;
+            background: transparent;
+            border: none;
         }
-        .cell.white {
+        .cell.filled {
+            background: #ffe4b5;
+            color: #333;
+        }
+        .cell.empty {
             background: white;
             border: 2px solid #ddd;
+            cursor: pointer;
+            touch-action: manipulation;
         }
-        .cell.white:hover {
+        .cell.empty:hover {
             border-color: #667eea;
         }
         .cell.selected {
@@ -135,61 +124,56 @@
             background: #e3f2fd;
         }
         .cell.correct {
-            background: #4caf50;
-            color: white;
+            background: #c8e6c9;
+            border-color: #4caf50;
             animation: pop 0.3s;
         }
         .cell.wrong {
+            background: #ffcdd2;
             animation: shake 0.5s;
         }
         @keyframes pop {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.15); }
         }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
-        .number-pad {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            max-width: 400px;
-            margin: 0 auto 20px;
-        }
-        .num-btn {
-            padding: 18px;
-            font-size: 1.4rem;
-            font-weight: 600;
-            background: #667eea;
-            color: white;
-            border: none;
+        .answers-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
             border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.2s;
-            touch-action: manipulation;
-            user-select: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .num-btn:hover {
-            background: #5568d3;
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
         }
-        .num-btn:active {
-            transform: scale(0.95);
-            background: #4a56b8;
-        }
-        .feedback {
-            text-align: center;
-            font-size: 1.8rem;
+        .answer-btn {
+            padding: 15px;
+            font-size: 1.2rem;
             font-weight: 600;
-            min-height: 50px;
-            margin-bottom: 20px;
-        }
-        .feedback.success {
+            background: white;
             color: #4caf50;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: all 0.2s;
         }
-        .feedback.error {
-            color: #f44336;
+        .answer-btn:active {
+            transform: scale(0.95);
+            background: #4caf50;
+            color: white;
+        }
+        .answer-btn.used {
+            opacity: 0.3;
+            pointer-events: none;
         }
         .celebration {
             position: fixed;
@@ -197,8 +181,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 50px;
-            border-radius: 30px;
+            padding: 40px;
+            border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.4);
             text-align: center;
             z-index: 1000;
@@ -209,14 +193,36 @@
             animation: pop 0.5s;
         }
         .celebration h2 {
-            font-size: 3rem;
-            color: #667eea;
+            font-size: 2.5rem;
+            color: #4caf50;
             margin-bottom: 20px;
         }
         .celebration p {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .btn-primary {
+            background: #4caf50;
+            color: white;
+        }
+        .btn-secondary {
+            background: #667eea;
+            color: white;
         }
         canvas {
             position: fixed;
@@ -225,295 +231,223 @@
             pointer-events: none;
             z-index: 999;
         }
-        .new-game-btn {
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            background: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            touch-action: manipulation;
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-                margin-top: 60px;
-            }
-            h1 {
-                font-size: 1.8rem;
-                margin-bottom: 15px;
-            }
-            .difficulty-selector {
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-            .diff-btn {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-            }
-            .current-clue {
-                font-size: 1.2rem;
-                padding: 12px;
-                margin-bottom: 15px;
-            }
-            .cell {
-                width: 35px;
-                height: 35px;
-                font-size: 1.1rem;
-            }
-            .number-pad {
-                gap: 8px;
-                margin-bottom: 15px;
-            }
-            .num-btn {
-                padding: 15px;
-                font-size: 1.2rem;
-            }
-            .feedback {
-                font-size: 1.4rem;
-            }
-            .celebration h2 {
-                font-size: 2rem;
-            }
-            .celebration p {
-                font-size: 1.2rem;
-            }
-        }
         @media (max-width: 600px) {
             .cell {
-                width: 30px;
-                height: 30px;
-                font-size: 1rem;
+                width: 32px;
+                height: 32px;
+                font-size: 0.95rem;
             }
-            h1 {
-                font-size: 1.5rem;
+            .answers-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            .level-title {
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 <body>
-    <button class="back-btn" onclick="window.location.href='../../index.html'">← Back</button>
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='../../index.html'">← Back</button>
+        <div class="level-title" id="levelTitle">LEVEL 1</div>
+        <button class="settings-btn" onclick="showLevelSelect()">⚙️</button>
+    </div>
     
-    <div class="container">
-        <h1>🧮 Math Crossword</h1>
-        
-        <div class="difficulty-selector">
-            <button class="diff-btn active" data-level="easy">Easy</button>
-            <button class="diff-btn" data-level="medium">Medium</button>
-            <button class="diff-btn" data-level="hard">Hard</button>
-        </div>
-        
-        <div class="stats" id="stats"></div>
-        
-        <div class="current-clue" id="clue">Click a white square to start!</div>
-        
-        <div class="grid-container">
-            <div class="grid" id="grid"></div>
-        </div>
-        
-        <div class="feedback" id="feedback"></div>
-        
-        <div class="number-pad" id="numberPad"></div>
-        
-        <div style="text-align: center;">
-            <button class="new-game-btn" onclick="startNewGame()">New Game</button>
-        </div>
+    <div class="stats-bar">
+        <div class="stat">Mistakes: <span id="mistakes">0</span>/3</div>
+        <div class="stat">Time: <span id="timer">00:00</span></div>
+    </div>
+    
+    <div class="grid-container">
+        <div class="grid" id="grid"></div>
+    </div>
+    
+    <div class="answers-container">
+        <div class="answers-grid" id="answersGrid"></div>
     </div>
     
     <div class="celebration" id="celebration">
-        <h2>🎉 You're a Math Superstar! 🎉</h2>
-        <p id="completionTime"></p>
-        <button class="new-game-btn" onclick="startNewGame()">Play Again</button>
+        <h2>🎉 Amazing! 🎉</h2>
+        <p id="completionMsg"></p>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="nextLevel()">Next Level</button>
+            <button class="btn btn-secondary" onclick="showLevelSelect()">Choose Level</button>
+        </div>
     </div>
     
     <canvas id="confetti"></canvas>
 
     <script>
-        // Configuration
-        const CONFIG = {
-            easy: { size: 5, range: 10, ops: ['+', '-'] },
-            medium: { size: 7, range: 20, ops: ['+', '-', '×'] },
-            hard: { size: 9, range: 10, ops: ['×', '÷'] }
+        const LEVELS = {
+            1: { size: 7, difficulty: 'easy' },
+            2: { size: 8, difficulty: 'easy' },
+            3: { size: 9, difficulty: 'medium' },
+            4: { size: 10, difficulty: 'medium' },
+            5: { size: 11, difficulty: 'hard' }
         };
         
-        let difficulty = 'easy';
+        let currentLevel = 1;
         let grid = [];
-        let problems = [];
+        let emptyCells = [];
         let selectedCell = null;
+        let mistakes = 0;
         let startTime = null;
-        let correctCount = 0;
+        let timerInterval = null;
+        let answerOptions = [];
         
-        // Initialize
-        document.querySelectorAll('.diff-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                difficulty = btn.dataset.level;
-                startNewGame();
-            });
-        });
-        
-        // Create number pad
-        for (let i = 1; i <= 9; i++) {
-            const btn = document.createElement('button');
-            btn.className = 'num-btn';
-            btn.textContent = i;
-            btn.onclick = () => enterNumber(i);
-            document.getElementById('numberPad').appendChild(btn);
-        }
-        const zeroBtn = document.createElement('button');
-        zeroBtn.className = 'num-btn';
-        zeroBtn.textContent = '0';
-        zeroBtn.onclick = () => enterNumber(0);
-        document.getElementById('numberPad').appendChild(zeroBtn);
-        
-        // Keyboard support
-        document.addEventListener('keydown', (e) => {
-            if (e.key >= '0' && e.key <= '9') {
-                enterNumber(parseInt(e.key));
-            }
-        });
-        
-        function startNewGame() {
-            const config = CONFIG[difficulty];
-            const size = config.size;
-            
-            // Show best time
-            const bestTime = localStorage.getItem(`mathCrossword_${difficulty}`);
-            document.getElementById('stats').textContent = bestTime 
-                ? `Your best: ${formatTime(parseInt(bestTime))}`
-                : 'No best time yet!';
-            
-            // Generate grid
-            grid = Array(size).fill().map(() => Array(size).fill({ type: 'black' }));
-            problems = [];
-            correctCount = 0;
+        function startLevel(level) {
+            currentLevel = level;
+            const config = LEVELS[level];
+            mistakes = 0;
             startTime = Date.now();
             
-            // Create horizontal and vertical problems
-            generateProblems(config, size);
-            
-            // Render grid
-            renderGrid(size);
-            
-            document.getElementById('clue').textContent = 'Click a white square to start!';
-            document.getElementById('feedback').textContent = '';
+            document.getElementById('levelTitle').textContent = `LEVEL ${level}`;
+            document.getElementById('mistakes').textContent = '0';
             document.getElementById('celebration').classList.remove('show');
+            
+            generatePuzzle(config);
+            startTimer();
         }
         
-        function generateProblems(config, size) {
-            const numProblems = Math.floor(size * 1.5);
+        function generatePuzzle(config) {
+            const size = config.size;
+            grid = Array(size).fill().map(() => Array(size).fill(null));
+            emptyCells = [];
+            answerOptions = [];
+            
+            // Generate crossword-style math problems
+            const numProblems = Math.floor(size * 1.2);
             
             for (let i = 0; i < numProblems; i++) {
                 const isHorizontal = Math.random() > 0.5;
-                const length = 3; // Each problem is 3 cells: num op num = answer
+                const length = 5; // num op num = answer
                 
-                let row, col;
-                let attempts = 0;
-                
-                // Find valid position
+                let row, col, attempts = 0;
                 do {
-                    row = Math.floor(Math.random() * size);
-                    col = Math.floor(Math.random() * size);
+                    row = Math.floor(Math.random() * (size - (isHorizontal ? 0 : length)));
+                    col = Math.floor(Math.random() * (size - (isHorizontal ? length : 0)));
                     attempts++;
-                } while (attempts < 50 && !canPlaceProblem(row, col, length, isHorizontal, size));
+                } while (attempts < 100 && !canPlace(row, col, length, isHorizontal, size));
                 
-                if (attempts >= 50) continue;
+                if (attempts >= 100) continue;
                 
-                // Generate problem
-                const problem = generateMathProblem(config);
-                
-                // Place problem in grid
-                for (let j = 0; j < length; j++) {
-                    const r = isHorizontal ? row : row + j;
-                    const c = isHorizontal ? col + j : col;
-                    
-                    if (j === 0) {
-                        grid[r][c] = { type: 'white', value: problem.num1, isAnswer: false, problemId: problems.length };
-                    } else if (j === 1) {
-                        grid[r][c] = { type: 'white', value: problem.op, isAnswer: false, problemId: problems.length };
-                    } else {
-                        grid[r][c] = { type: 'white', value: '', answer: problem.answer, isAnswer: true, problemId: problems.length };
-                    }
-                }
-                
-                problems.push({
-                    id: problems.length,
-                    text: `${problem.num1} ${problem.op} ${problem.num2} = ?`,
-                    answer: problem.answer,
-                    row,
-                    col,
-                    isHorizontal
-                });
+                const problem = generateProblem(config.difficulty);
+                placeProblem(row, col, isHorizontal, problem);
             }
+            
+            // Generate answer options (correct answers + some wrong ones)
+            const correctAnswers = emptyCells.map(c => c.answer);
+            answerOptions = [...correctAnswers];
+            
+            // Add some wrong answers
+            while (answerOptions.length < 21) {
+                const wrong = Math.floor(Math.random() * 50) + 1;
+                if (!answerOptions.includes(wrong)) {
+                    answerOptions.push(wrong);
+                }
+            }
+            
+            answerOptions.sort((a, b) => a - b);
+            
+            renderGrid(size);
+            renderAnswers();
         }
         
-        function canPlaceProblem(row, col, length, isHorizontal, size) {
+        function canPlace(row, col, length, isHorizontal, size) {
             for (let i = 0; i < length; i++) {
                 const r = isHorizontal ? row : row + i;
                 const c = isHorizontal ? col + i : col;
-                
-                if (r >= size || c >= size) return false;
-                if (grid[r][c].type === 'white') return false;
+                if (r >= size || c >= size || grid[r][c] !== null) return false;
             }
             return true;
         }
         
-        function generateMathProblem(config) {
-            const op = config.ops[Math.floor(Math.random() * config.ops.length)];
-            let num1, num2, answer;
+        function generateProblem(difficulty) {
+            let num1, num2, op, answer;
             
-            if (op === '+') {
-                num1 = Math.floor(Math.random() * config.range) + 1;
-                num2 = Math.floor(Math.random() * config.range) + 1;
-                answer = num1 + num2;
-            } else if (op === '-') {
-                num1 = Math.floor(Math.random() * config.range) + 1;
-                num2 = Math.floor(Math.random() * num1) + 1;
-                answer = num1 - num2;
-            } else if (op === '×') {
-                if (difficulty === 'medium') {
-                    const multipliers = [2, 5, 10];
-                    num1 = multipliers[Math.floor(Math.random() * multipliers.length)];
-                    num2 = Math.floor(Math.random() * 5) + 1;
+            if (difficulty === 'easy') {
+                op = Math.random() > 0.5 ? '+' : '-';
+                if (op === '+') {
+                    num1 = Math.floor(Math.random() * 20) + 1;
+                    num2 = Math.floor(Math.random() * 20) + 1;
+                    answer = num1 + num2;
                 } else {
-                    num1 = Math.floor(Math.random() * 10) + 1;
-                    num2 = Math.floor(Math.random() * 10) + 1;
+                    num1 = Math.floor(Math.random() * 30) + 10;
+                    num2 = Math.floor(Math.random() * num1);
+                    answer = num1 - num2;
                 }
-                answer = num1 * num2;
-            } else if (op === '÷') {
-                num2 = Math.floor(Math.random() * 10) + 1;
-                answer = Math.floor(Math.random() * 10) + 1;
-                num1 = num2 * answer;
+            } else if (difficulty === 'medium') {
+                const ops = ['+', '-', '×'];
+                op = ops[Math.floor(Math.random() * ops.length)];
+                if (op === '×') {
+                    num1 = [2, 3, 5][Math.floor(Math.random() * 3)];
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    answer = num1 * num2;
+                } else if (op === '+') {
+                    num1 = Math.floor(Math.random() * 30) + 1;
+                    num2 = Math.floor(Math.random() * 30) + 1;
+                    answer = num1 + num2;
+                } else {
+                    num1 = Math.floor(Math.random() * 40) + 10;
+                    num2 = Math.floor(Math.random() * num1);
+                    answer = num1 - num2;
+                }
+            } else {
+                const ops = ['×', '÷'];
+                op = ops[Math.floor(Math.random() * ops.length)];
+                if (op === '×') {
+                    num1 = Math.floor(Math.random() * 12) + 1;
+                    num2 = Math.floor(Math.random() * 12) + 1;
+                    answer = num1 * num2;
+                } else {
+                    num2 = Math.floor(Math.random() * 12) + 1;
+                    answer = Math.floor(Math.random() * 12) + 1;
+                    num1 = num2 * answer;
+                }
             }
             
             return { num1, num2, op, answer };
+        }
+        
+        function placeProblem(row, col, isHorizontal, problem) {
+            const cells = [problem.num1, problem.op, problem.num2, '=', null];
+            
+            for (let i = 0; i < cells.length; i++) {
+                const r = isHorizontal ? row : row + i;
+                const c = isHorizontal ? col + i : col;
+                
+                if (i === 4) {
+                    grid[r][c] = { type: 'empty', answer: problem.answer };
+                    emptyCells.push({ row: r, col: c, answer: problem.answer });
+                } else {
+                    grid[r][c] = { type: 'filled', value: cells[i] };
+                }
+            }
         }
         
         function renderGrid(size) {
             const gridEl = document.getElementById('grid');
             gridEl.innerHTML = '';
             
-            // Adjust cell size for mobile
-            const isMobile = window.innerWidth <= 768;
-            const cellSize = isMobile ? (window.innerWidth <= 600 ? 30 : 35) : 45;
+            const isMobile = window.innerWidth <= 600;
+            const cellSize = isMobile ? 32 : 40;
             
             gridEl.style.gridTemplateColumns = `repeat(${size}, ${cellSize}px)`;
             
             for (let r = 0; r < size; r++) {
                 for (let c = 0; c < size; c++) {
                     const cell = document.createElement('div');
-                    cell.className = `cell ${grid[r][c].type}`;
-                    cell.dataset.row = r;
-                    cell.dataset.col = c;
+                    const data = grid[r][c];
                     
-                    if (grid[r][c].type === 'white') {
-                        if (!grid[r][c].isAnswer) {
-                            cell.textContent = grid[r][c].value;
-                        }
+                    if (!data) {
+                        cell.className = 'cell black';
+                    } else if (data.type === 'filled') {
+                        cell.className = 'cell filled';
+                        cell.textContent = data.value;
+                    } else {
+                        cell.className = 'cell empty';
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
                         cell.onclick = () => selectCell(r, c);
                     }
                     
@@ -522,89 +456,103 @@
             }
         }
         
-        function selectCell(row, col) {
-            const cell = grid[row][col];
-            if (!cell.isAnswer) return;
+        function renderAnswers() {
+            const answersEl = document.getElementById('answersGrid');
+            answersEl.innerHTML = '';
             
-            selectedCell = { row, col };
-            
-            // Update UI
-            document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
-            document.querySelector(`[data-row="${row}"][data-col="${col}"]`).classList.add('selected');
-            
-            // Show clue
-            const problem = problems.find(p => p.id === cell.problemId);
-            if (problem) {
-                document.getElementById('clue').textContent = problem.text;
-            }
+            answerOptions.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = num;
+                btn.dataset.value = num;
+                btn.onclick = () => selectAnswer(num, btn);
+                answersEl.appendChild(btn);
+            });
         }
         
-        function enterNumber(num) {
+        function selectCell(row, col) {
+            selectedCell = { row, col };
+            document.querySelectorAll('.cell.empty').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`[data-row="${row}"][data-col="${col}"]`).classList.add('selected');
+        }
+        
+        function selectAnswer(value, btn) {
             if (!selectedCell) return;
             
             const { row, col } = selectedCell;
-            const cell = grid[row][col];
+            const cellData = grid[row][col];
             const cellEl = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
             
-            if (num === cell.answer) {
-                // Correct!
-                cellEl.textContent = num;
+            if (value === cellData.answer) {
+                cellEl.textContent = value;
+                cellEl.classList.remove('selected');
                 cellEl.classList.add('correct');
+                cellEl.onclick = null;
+                btn.classList.add('used');
                 playSound('correct');
-                document.getElementById('feedback').textContent = '🎉 Great job!';
-                document.getElementById('feedback').className = 'feedback success';
                 
-                correctCount++;
+                selectedCell = null;
                 
-                setTimeout(() => {
-                    document.getElementById('feedback').textContent = '';
-                    selectedCell = null;
-                    cellEl.classList.remove('selected');
-                    
-                    // Check if all done
-                    if (correctCount === problems.length) {
-                        celebrate();
-                    }
-                }, 1000);
+                if (document.querySelectorAll('.cell.empty:not(.correct)').length === 0) {
+                    setTimeout(() => celebrate(), 500);
+                }
             } else {
-                // Wrong
                 cellEl.classList.add('wrong');
                 playSound('wrong');
-                cellEl.textContent = num;
-                document.getElementById('feedback').textContent = `Try again! The answer is ${cell.answer}`;
-                document.getElementById('feedback').className = 'feedback error';
+                mistakes++;
+                document.getElementById('mistakes').textContent = mistakes;
                 
                 setTimeout(() => {
-                    cellEl.textContent = '';
                     cellEl.classList.remove('wrong');
-                    document.getElementById('feedback').textContent = '';
-                }, 2000);
+                }, 500);
+                
+                if (mistakes >= 3) {
+                    setTimeout(() => gameOver(), 500);
+                }
             }
         }
         
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const mins = Math.floor(elapsed / 60);
+                const secs = elapsed % 60;
+                document.getElementById('timer').textContent = 
+                    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }, 1000);
+        }
+        
         function celebrate() {
-            const elapsed = Date.now() - startTime;
-            const bestTime = localStorage.getItem(`mathCrossword_${difficulty}`);
-            
-            if (!bestTime || elapsed < parseInt(bestTime)) {
-                localStorage.setItem(`mathCrossword_${difficulty}`, elapsed);
-                document.getElementById('completionTime').textContent = 
-                    `New record: ${formatTime(elapsed)}! 🏆`;
-            } else {
-                document.getElementById('completionTime').textContent = 
-                    `Time: ${formatTime(elapsed)}`;
-            }
-            
+            clearInterval(timerInterval);
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('completionMsg').textContent = 
+                `Completed in ${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')} with ${mistakes} mistake${mistakes !== 1 ? 's' : ''}!`;
             document.getElementById('celebration').classList.add('show');
             playSound('celebrate');
             showConfetti();
         }
         
-        function formatTime(ms) {
-            const seconds = Math.floor(ms / 1000);
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins} min ${secs} sec`;
+        function gameOver() {
+            clearInterval(timerInterval);
+            alert('Too many mistakes! Try again!');
+            startLevel(currentLevel);
+        }
+        
+        function nextLevel() {
+            if (currentLevel < 5) {
+                startLevel(currentLevel + 1);
+            } else {
+                alert('You completed all levels! 🎉');
+                startLevel(1);
+            }
+        }
+        
+        function showLevelSelect() {
+            const level = prompt('Choose level (1-5):', currentLevel);
+            if (level && level >= 1 && level <= 5) {
+                startLevel(parseInt(level));
+            }
         }
         
         function playSound(type) {
@@ -616,7 +564,7 @@
             gainNode.connect(audioContext.destination);
             
             if (type === 'correct') {
-                oscillator.frequency.value = 523.25; // C5
+                oscillator.frequency.value = 523.25;
                 gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
                 oscillator.start(audioContext.currentTime);
@@ -684,8 +632,7 @@
             animate();
         }
         
-        // Start first game
-        startNewGame();
+        startLevel(1);
     </script>
 </body>
 </html>
