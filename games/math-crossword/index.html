@@ -28,6 +28,22 @@
         .difficulty-screen {
             text-align: center;
             padding: 20px;
+            position: relative;
+        }
+        .back-to-games {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            touch-action: manipulation;
         }
         .difficulty-screen h1 {
             color: white;
@@ -313,6 +329,7 @@
 <body>
     <!-- Difficulty Selection Screen -->
     <div class="difficulty-screen" id="difficultyScreen">
+        <button class="back-to-games" onclick="window.location.href='../../index.html'">← All Games</button>
         <h1>🔢 Math Crossword</h1>
         <p>Choose your level!</p>
         <div class="difficulty-buttons">
