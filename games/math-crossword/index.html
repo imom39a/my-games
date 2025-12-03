@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Crossword</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .difficulty-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .diff-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .diff-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        .stats {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+        .current-clue {
+            background: #fff3cd;
+            border: 3px solid #ffc107;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #856404;
+            min-height: 60px;
+        }
+        .grid-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: inline-grid;
+            gap: 3px;
+            background: #ddd;
+            padding: 3px;
+            border-radius: 10px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cell.black {
+            background: #333;
+        }
+        .cell.white {
+            background: white;
+            border: 2px solid #ddd;
+        }
+        .cell.white:hover {
+            border-color: #667eea;
+        }
+        .cell.selected {
+            border: 3px solid #667eea;
+            background: #e3f2fd;
+        }
+        .cell.correct {
+            background: #4caf50;
+            color: white;
+            animation: pop 0.3s;
+        }
+        .cell.wrong {
+            animation: shake 0.5s;
+        }
+        @keyframes pop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .number-pad {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto 20px;
+        }
+        .num-btn {
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .num-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+        .num-btn:active {
+            transform: scale(0.95);
+        }
+        .feedback {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 600;
+            min-height: 50px;
+            margin-bottom: 20px;
+        }
+        .feedback.success {
+            color: #4caf50;
+        }
+        .feedback.error {
+            color: #f44336;
+        }
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            text-align: center;
+            z-index: 1000;
+            display: none;
+        }
+        .celebration.show {
+            display: block;
+            animation: pop 0.5s;
+        }
+        .celebration h2 {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .celebration p {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .new-game-btn {
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        @media (max-width: 600px) {
+            .cell {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='../../index.html'">← Back</button>
+    
+    <div class="container">
+        <h1>🧮 Math Crossword</h1>
+        
+        <div class="difficulty-selector">
+            <button class="diff-btn active" data-level="easy">Easy</button>
+            <button class="diff-btn" data-level="medium">Medium</button>
+            <button class="diff-btn" data-level="hard">Hard</button>
+        </div>
+        
+        <div class="stats" id="stats"></div>
+        
+        <div class="current-clue" id="clue">Click a white square to start!</div>
+        
+        <div class="grid-container">
+            <div class="grid" id="grid"></div>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="number-pad" id="numberPad"></div>
+        
+        <div style="text-align: center;">
+            <button class="new-game-btn" onclick="startNewGame()">New Game</button>
+        </div>
+    </div>
+    
+    <div class="celebration" id="celebration">
+        <h2>🎉 You're a Math Superstar! 🎉</h2>
+        <p id="completionTime"></p>
+        <button class="new-game-btn" onclick="startNewGame()">Play Again</button>
+    </div>
+    
+    <canvas id="confetti"></canvas>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            easy: { size: 5, range: 10, ops: ['+', '-'] },
+            medium: { size: 7, range: 20, ops: ['+', '-', '×'] },
+            hard: { size: 9, range: 10, ops: ['×', '÷'] }
+        };
+        
+        let difficulty = 'easy';
+        let grid = [];
+        let problems = [];
+        let selectedCell = null;
+        let startTime = null;
+        let correctCount = 0;
+        
+        // Initialize
+        document.querySelectorAll('.diff-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                difficulty = btn.dataset.level;
+                startNewGame();
+            });
+        });
+        
+        // Create number pad
+        for (let i = 1; i <= 9; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'num-btn';
+            btn.textContent = i;
+            btn.onclick = () => enterNumber(i);
+            document.getElementById('numberPad').appendChild(btn);
+        }
+        const zeroBtn = document.createElement('button');
+        zeroBtn.className = 'num-btn';
+        zeroBtn.textContent = '0';
+        zeroBtn.onclick = () => enterNumber(0);
+        document.getElementById('numberPad').appendChild(zeroBtn);
+        
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') {
+                enterNumber(parseInt(e.key));
+            }
+        });
+        
+        function startNewGame() {
+            const config = CONFIG[difficulty];
+            const size = config.size;
+            
+            // Show best time
+            const bestTime = localStorage.getItem(`mathCrossword_${difficulty}`);
+            document.getElementById('stats').textContent = bestTime 
+                ? `Your best: ${formatTime(parseInt(bestTime))}`
+                : 'No best time yet!';
+            
+            // Generate grid
+            grid = Array(size).fill().map(() => Array(size).fill({ type: 'black' }));
+            problems = [];
+            correctCount = 0;
+            startTime = Date.now();
+            
+            // Create horizontal and vertical problems
+            generateProblems(config, size);
+            
+            // Render grid
+            renderGrid(size);
+            
+            document.getElementById('clue').textContent = 'Click a white square to start!';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('celebration').classList.remove('show');
+        }
+        
+        function generateProblems(config, size) {
+            const numProblems = Math.floor(size * 1.5);
+            
+            for (let i = 0; i < numProblems; i++) {
+                const isHorizontal = Math.random() > 0.5;
+                const length = 3; // Each problem is 3 cells: num op num = answer
+                
+                let row, col;
+                let attempts = 0;
+                
+                // Find valid position
+                do {
+                    row = Math.floor(Math.random() * size);
+                    col = Math.floor(Math.random() * size);
+                    attempts++;
+                } while (attempts < 50 && !canPlaceProblem(row, col, length, isHorizontal, size));
+                
+                if (attempts >= 50) continue;
+                
+                // Generate problem
+                const problem = generateMathProblem(config);
+                
+                // Place problem in grid
+                for (let j = 0; j < length; j++) {
+                    const r = isHorizontal ? row : row + j;
+                    const c = isHorizontal ? col + j : col;
+                    
+                    if (j === 0) {
+                        grid[r][c] = { type: 'white', value: problem.num1, isAnswer: false, problemId: problems.length };
+                    } else if (j === 1) {
+                        grid[r][c] = { type: 'white', value: problem.op, isAnswer: false, problemId: problems.length };
+                    } else {
+                        grid[r][c] = { type: 'white', value: '', answer: problem.answer, isAnswer: true, problemId: problems.length };
+                    }
+                }
+                
+                problems.push({
+                    id: problems.length,
+                    text: `${problem.num1} ${problem.op} ${problem.num2} = ?`,
+                    answer: problem.answer,
+                    row,
+                    col,
+                    isHorizontal
+                });
+            }
+        }
+        
+        function canPlaceProblem(row, col, length, isHorizontal, size) {
+            for (let i = 0; i < length; i++) {
+                const r = isHorizontal ? row : row + i;
+                const c = isHorizontal ? col + i : col;
+                
+                if (r >= size || c >= size) return false;
+                if (grid[r][c].type === 'white') return false;
+            }
+            return true;
+        }
+        
+        function generateMathProblem(config) {
+            const op = config.ops[Math.floor(Math.random() * config.ops.length)];
+            let num1, num2, answer;
+            
+            if (op === '+') {
+                num1 = Math.floor(Math.random() * config.range) + 1;
+                num2 = Math.floor(Math.random() * config.range) + 1;
+                answer = num1 + num2;
+            } else if (op === '-') {
+                num1 = Math.floor(Math.random() * config.range) + 1;
+                num2 = Math.floor(Math.random() * num1) + 1;
+                answer = num1 - num2;
+            } else if (op === '×') {
+                if (difficulty === 'medium') {
+                    const multipliers = [2, 5, 10];
+                    num1 = multipliers[Math.floor(Math.random() * multipliers.length)];
+                    num2 = Math.floor(Math.random() * 5) + 1;
+                } else {
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                }
+                answer = num1 * num2;
+            } else if (op === '÷') {
+                num2 = Math.floor(Math.random() * 10) + 1;
+                answer = Math.floor(Math.random() * 10) + 1;
+                num1 = num2 * answer;
+            }
+            
+            return { num1, num2, op, answer };
+        }
+        
+        function renderGrid(size) {
+            const gridEl = document.getElementById('grid');
+            gridEl.innerHTML = '';
+            gridEl.style.gridTemplateColumns = `repeat(${size}, 50px)`;
+            
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = `cell ${grid[r][c].type}`;
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    
+                    if (grid[r][c].type === 'white') {
+                        if (!grid[r][c].isAnswer) {
+                            cell.textContent = grid[r][c].value;
+                        }
+                        cell.onclick = () => selectCell(r, c);
+                    }
+                    
+                    gridEl.appendChild(cell);
+                }
+            }
+        }
+        
+        function selectCell(row, col) {
+            const cell = grid[row][col];
+            if (!cell.isAnswer) return;
+            
+            selectedCell = { row, col };
+            
+            // Update UI
+            document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`[data-row="${row}"][data-col="${col}"]`).classList.add('selected');
+            
+            // Show clue
+            const problem = problems.find(p => p.id === cell.problemId);
+            if (problem) {
+                document.getElementById('clue').textContent = problem.text;
+            }
+        }
+        
+        function enterNumber(num) {
+            if (!selectedCell) return;
+            
+            const { row, col } = selectedCell;
+            const cell = grid[row][col];
+            const cellEl = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            
+            if (num === cell.answer) {
+                // Correct!
+                cellEl.textContent = num;
+                cellEl.classList.add('correct');
+                playSound('correct');
+                document.getElementById('feedback').textContent = '🎉 Great job!';
+                document.getElementById('feedback').className = 'feedback success';
+                
+                correctCount++;
+                
+                setTimeout(() => {
+                    document.getElementById('feedback').textContent = '';
+                    selectedCell = null;
+                    cellEl.classList.remove('selected');
+                    
+                    // Check if all done
+                    if (correctCount === problems.length) {
+                        celebrate();
+                    }
+                }, 1000);
+            } else {
+                // Wrong
+                cellEl.classList.add('wrong');
+                playSound('wrong');
+                cellEl.textContent = num;
+                document.getElementById('feedback').textContent = `Try again! The answer is ${cell.answer}`;
+                document.getElementById('feedback').className = 'feedback error';
+                
+                setTimeout(() => {
+                    cellEl.textContent = '';
+                    cellEl.classList.remove('wrong');
+                    document.getElementById('feedback').textContent = '';
+                }, 2000);
+            }
+        }
+        
+        function celebrate() {
+            const elapsed = Date.now() - startTime;
+            const bestTime = localStorage.getItem(`mathCrossword_${difficulty}`);
+            
+            if (!bestTime || elapsed < parseInt(bestTime)) {
+                localStorage.setItem(`mathCrossword_${difficulty}`, elapsed);
+                document.getElementById('completionTime').textContent = 
+                    `New record: ${formatTime(elapsed)}! 🏆`;
+            } else {
+                document.getElementById('completionTime').textContent = 
+                    `Time: ${formatTime(elapsed)}`;
+            }
+            
+            document.getElementById('celebration').classList.add('show');
+            playSound('celebrate');
+            showConfetti();
+        }
+        
+        function formatTime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins} min ${secs} sec`;
+        }
+        
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'correct') {
+                oscillator.frequency.value = 523.25; // C5
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                oscillator.frequency.value = 200;
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } else if (type === 'celebrate') {
+                [523.25, 659.25, 783.99].forEach((freq, i) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.5);
+                    osc.start(audioContext.currentTime + i * 0.1);
+                    osc.stop(audioContext.currentTime + i * 0.1 + 0.5);
+                });
+            }
+        }
+        
+        function showConfetti() {
+            const canvas = document.getElementById('confetti');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+            
+            const particles = [];
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 2,
+                    color: ['#667eea', '#764ba2', '#4caf50', '#ffc107', '#f44336'][Math.floor(Math.random() * 5)],
+                    vx: Math.random() * 2 - 1,
+                    vy: Math.random() * 3 + 2
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.1;
+                });
+                
+                if (particles.some(p => p.y < canvas.height)) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            
+            animate();
+        }
+        
+        // Start first game
+        startNewGame();
+    </script>
+</body>
+</html>
