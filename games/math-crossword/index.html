@@ -221,19 +221,23 @@
         .answers-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
+            gap: 15px;
         }
         .answer-btn {
-            padding: 20px;
-            font-size: 1.5rem;
+            padding: 25px 15px;
+            font-size: 1.8rem;
             font-weight: 600;
             background: white;
             color: #4caf50;
             border: 3px solid #4caf50;
-            border-radius: 15px;
+            border-radius: 20px;
             cursor: pointer;
             touch-action: manipulation;
             transition: all 0.2s;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .answer-btn:active {
             transform: scale(0.95);
@@ -241,7 +245,7 @@
             color: white;
         }
         .answer-btn.used {
-            opacity: 0.3;
+            opacity: 0.2;
             pointer-events: none;
         }
         .celebration {
@@ -310,8 +314,9 @@
                 font-size: 1.1rem;
             }
             .answer-btn {
-                padding: 18px;
-                font-size: 1.3rem;
+                padding: 20px 12px;
+                font-size: 1.5rem;
+                min-height: 60px;
             }
         }
         @media (max-width: 600px) {
