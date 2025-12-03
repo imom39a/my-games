@@ -15,91 +15,143 @@
         }
         body {
             font-family: 'Fredoka', sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Difficulty Selection Screen */
+        .difficulty-screen {
+            text-align: center;
+            padding: 20px;
+        }
+        .difficulty-screen h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .difficulty-screen p {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+        }
+        .difficulty-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .diff-select-btn {
+            padding: 30px;
+            font-size: 2rem;
+            font-weight: 600;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+            touch-action: manipulation;
+        }
+        .diff-select-btn:active {
+            transform: scale(0.95);
+        }
+        .diff-select-btn.easy {
+            background: #4caf50;
+            color: white;
+        }
+        .diff-select-btn.medium {
+            background: #ff9800;
+            color: white;
+        }
+        .diff-select-btn.hard {
+            background: #f44336;
+            color: white;
+        }
+        
+        /* Game Screen */
+        .game-screen {
+            display: none;
+            width: 100%;
+            padding: 10px;
         }
         .header {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
+            margin: 0 auto 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
+            padding: 15px 20px;
             background: white;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        .back-btn {
-            padding: 8px 16px;
+        .home-btn {
+            padding: 12px 24px;
             background: #667eea;
             color: white;
             border: none;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1.2rem;
             font-weight: 600;
             touch-action: manipulation;
         }
         .level-title {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 600;
             color: #333;
         }
-        .settings-btn {
-            padding: 8px 16px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            touch-action: manipulation;
-        }
         .stats-bar {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
+            margin: 0 auto 15px;
             display: flex;
             justify-content: space-between;
-            padding: 12px 20px;
+            padding: 15px 25px;
             background: white;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         .stat {
-            font-size: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
             color: #666;
         }
         .grid-container {
+            max-width: 800px;
+            margin: 0 auto 15px;
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             overflow-x: auto;
+            display: flex;
+            justify-content: center;
         }
         .grid {
             display: inline-grid;
-            gap: 2px;
+            gap: 3px;
             background: #ddd;
-            padding: 2px;
+            padding: 3px;
         }
         .cell {
-            width: 40px;
-            height: 40px;
+            width: 55px;
+            height: 55px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            border-radius: 3px;
+            border-radius: 5px;
             user-select: none;
         }
         .cell.black {
@@ -112,7 +164,7 @@
         }
         .cell.empty {
             background: white;
-            border: 2px solid #ddd;
+            border: 3px solid #ddd;
             cursor: pointer;
             touch-action: manipulation;
         }
@@ -120,7 +172,7 @@
             border-color: #667eea;
         }
         .cell.selected {
-            border: 3px solid #667eea;
+            border: 4px solid #667eea;
             background: #e3f2fd;
         }
         .cell.correct {
@@ -138,30 +190,31 @@
         }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
         .answers-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
+            margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         .answers-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
         }
         .answer-btn {
-            padding: 15px;
-            font-size: 1.2rem;
+            padding: 20px;
+            font-size: 1.5rem;
             font-weight: 600;
             background: white;
             color: #4caf50;
-            border: 2px solid #4caf50;
-            border-radius: 10px;
+            border: 3px solid #4caf50;
+            border-radius: 15px;
             cursor: pointer;
             touch-action: manipulation;
             transition: all 0.2s;
@@ -181,8 +234,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 40px;
-            border-radius: 20px;
+            padding: 50px;
+            border-radius: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.4);
             text-align: center;
             z-index: 1000;
@@ -193,36 +246,26 @@
             animation: pop 0.5s;
         }
         .celebration h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: #4caf50;
-            margin-bottom: 20px;
-        }
-        .celebration p {
-            font-size: 1.3rem;
-            color: #666;
             margin-bottom: 25px;
         }
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
+        .celebration p {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 30px;
         }
         .btn {
-            padding: 12px 30px;
-            font-size: 1.1rem;
+            padding: 18px 40px;
+            font-size: 1.4rem;
             font-weight: 600;
             border: none;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
             touch-action: manipulation;
-        }
-        .btn-primary {
             background: #4caf50;
             color: white;
-        }
-        .btn-secondary {
-            background: #667eea;
-            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         canvas {
             position: fixed;
@@ -231,62 +274,98 @@
             pointer-events: none;
             z-index: 999;
         }
-        @media (max-width: 600px) {
-            .cell {
-                width: 32px;
-                height: 32px;
-                font-size: 0.95rem;
+        @media (max-width: 768px) {
+            .difficulty-screen h1 {
+                font-size: 2.5rem;
             }
-            .answers-grid {
-                grid-template-columns: repeat(5, 1fr);
+            .diff-select-btn {
+                font-size: 1.8rem;
+                padding: 25px;
+            }
+            .cell {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
             }
             .level-title {
-                font-size: 1.2rem;
+                font-size: 1.5rem;
+            }
+            .stat {
+                font-size: 1.1rem;
+            }
+            .answer-btn {
+                padding: 18px;
+                font-size: 1.3rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .cell {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            .answers-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <button class="back-btn" onclick="window.location.href='../../index.html'">← Back</button>
-        <div class="level-title" id="levelTitle">LEVEL 1</div>
-        <button class="settings-btn" onclick="showLevelSelect()">⚙️</button>
+    <!-- Difficulty Selection Screen -->
+    <div class="difficulty-screen" id="difficultyScreen">
+        <h1>🔢 Math Crossword</h1>
+        <p>Choose your level!</p>
+        <div class="difficulty-buttons">
+            <button class="diff-select-btn easy" onclick="startGame('easy')">
+                😊 Easy<br><small style="font-size: 1.2rem;">10 problems</small>
+            </button>
+            <button class="diff-select-btn medium" onclick="startGame('medium')">
+                😎 Medium<br><small style="font-size: 1.2rem;">15 problems</small>
+            </button>
+            <button class="diff-select-btn hard" onclick="startGame('hard')">
+                🤓 Hard<br><small style="font-size: 1.2rem;">25 problems</small>
+            </button>
+        </div>
     </div>
-    
-    <div class="stats-bar">
-        <div class="stat">Mistakes: <span id="mistakes">0</span>/3</div>
-        <div class="stat">Time: <span id="timer">00:00</span></div>
-    </div>
-    
-    <div class="grid-container">
-        <div class="grid" id="grid"></div>
-    </div>
-    
-    <div class="answers-container">
-        <div class="answers-grid" id="answersGrid"></div>
+
+    <!-- Game Screen -->
+    <div class="game-screen" id="gameScreen">
+        <div class="header">
+            <button class="home-btn" onclick="goHome()">🏠 Home</button>
+            <div class="level-title" id="levelTitle">EASY</div>
+            <div style="width: 100px;"></div>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat">❌ <span id="mistakes">0</span>/3</div>
+            <div class="stat">⏱️ <span id="timer">00:00</span></div>
+        </div>
+        
+        <div class="grid-container">
+            <div class="grid" id="grid"></div>
+        </div>
+        
+        <div class="answers-container">
+            <div class="answers-grid" id="answersGrid"></div>
+        </div>
     </div>
     
     <div class="celebration" id="celebration">
-        <h2>🎉 Amazing! 🎉</h2>
+        <h2>🎉 You Did It! 🎉</h2>
         <p id="completionMsg"></p>
-        <div class="btn-group">
-            <button class="btn btn-primary" onclick="nextLevel()">Next Level</button>
-            <button class="btn btn-secondary" onclick="showLevelSelect()">Choose Level</button>
-        </div>
+        <button class="btn" onclick="goHome()">Play Again</button>
     </div>
     
     <canvas id="confetti"></canvas>
 
     <script>
-        const LEVELS = {
-            1: { size: 7, difficulty: 'easy' },
-            2: { size: 8, difficulty: 'easy' },
-            3: { size: 9, difficulty: 'medium' },
-            4: { size: 10, difficulty: 'medium' },
-            5: { size: 11, difficulty: 'hard' }
+        const DIFFICULTY_CONFIG = {
+            easy: { maxProblems: 10, gridSize: 7, range: 10, ops: ['+', '-'] },
+            medium: { maxProblems: 15, gridSize: 9, range: 20, ops: ['+', '-', '×'] },
+            hard: { maxProblems: 25, gridSize: 11, range: 10, ops: ['×', '÷', '+', '-'] }
         };
         
-        let currentLevel = 1;
+        let currentDifficulty = 'easy';
         let grid = [];
         let emptyCells = [];
         let selectedCell = null;
@@ -295,53 +374,62 @@
         let timerInterval = null;
         let answerOptions = [];
         
-        function startLevel(level) {
-            currentLevel = level;
-            const config = LEVELS[level];
+        function goHome() {
+            document.getElementById('difficultyScreen').style.display = 'block';
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('celebration').classList.remove('show');
+            if (timerInterval) clearInterval(timerInterval);
+        }
+        
+        function startGame(difficulty) {
+            currentDifficulty = difficulty;
             mistakes = 0;
             startTime = Date.now();
             
-            document.getElementById('levelTitle').textContent = `LEVEL ${level}`;
+            document.getElementById('difficultyScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('levelTitle').textContent = difficulty.toUpperCase();
             document.getElementById('mistakes').textContent = '0';
             document.getElementById('celebration').classList.remove('show');
             
-            generatePuzzle(config);
+            generatePuzzle();
             startTimer();
         }
         
-        function generatePuzzle(config) {
-            const size = config.size;
+        function generatePuzzle() {
+            const config = DIFFICULTY_CONFIG[currentDifficulty];
+            const size = config.gridSize;
+            
             grid = Array(size).fill().map(() => Array(size).fill(null));
             emptyCells = [];
             answerOptions = [];
             
-            // Generate crossword-style math problems
-            const numProblems = Math.floor(size * 1.2);
+            let problemsPlaced = 0;
+            let attempts = 0;
             
-            for (let i = 0; i < numProblems; i++) {
+            while (problemsPlaced < config.maxProblems && attempts < 500) {
+                attempts++;
                 const isHorizontal = Math.random() > 0.5;
-                const length = 5; // num op num = answer
+                const length = 5;
                 
-                let row, col, attempts = 0;
-                do {
-                    row = Math.floor(Math.random() * (size - (isHorizontal ? 0 : length)));
-                    col = Math.floor(Math.random() * (size - (isHorizontal ? length : 0)));
-                    attempts++;
-                } while (attempts < 100 && !canPlace(row, col, length, isHorizontal, size));
+                const row = Math.floor(Math.random() * (size - (isHorizontal ? 0 : length)));
+                const col = Math.floor(Math.random() * (size - (isHorizontal ? length : 0)));
                 
-                if (attempts >= 100) continue;
-                
-                const problem = generateProblem(config.difficulty);
-                placeProblem(row, col, isHorizontal, problem);
+                if (canPlace(row, col, length, isHorizontal, size)) {
+                    const problem = generateProblem(config);
+                    placeProblem(row, col, isHorizontal, problem);
+                    problemsPlaced++;
+                }
             }
             
-            // Generate answer options (correct answers + some wrong ones)
+            // Generate answer options
             const correctAnswers = emptyCells.map(c => c.answer);
             answerOptions = [...correctAnswers];
             
-            // Add some wrong answers
-            while (answerOptions.length < 21) {
-                const wrong = Math.floor(Math.random() * 50) + 1;
+            // Add wrong answers
+            const totalOptions = Math.min(20, config.maxProblems + 10);
+            while (answerOptions.length < totalOptions) {
+                const wrong = Math.floor(Math.random() * (config.range * 3)) + 1;
                 if (!answerOptions.includes(wrong)) {
                     answerOptions.push(wrong);
                 }
@@ -362,48 +450,31 @@
             return true;
         }
         
-        function generateProblem(difficulty) {
-            let num1, num2, op, answer;
+        function generateProblem(config) {
+            const op = config.ops[Math.floor(Math.random() * config.ops.length)];
+            let num1, num2, answer;
             
-            if (difficulty === 'easy') {
-                op = Math.random() > 0.5 ? '+' : '-';
-                if (op === '+') {
-                    num1 = Math.floor(Math.random() * 20) + 1;
-                    num2 = Math.floor(Math.random() * 20) + 1;
-                    answer = num1 + num2;
-                } else {
-                    num1 = Math.floor(Math.random() * 30) + 10;
-                    num2 = Math.floor(Math.random() * num1);
-                    answer = num1 - num2;
-                }
-            } else if (difficulty === 'medium') {
-                const ops = ['+', '-', '×'];
-                op = ops[Math.floor(Math.random() * ops.length)];
-                if (op === '×') {
+            if (op === '+') {
+                num1 = Math.floor(Math.random() * config.range) + 1;
+                num2 = Math.floor(Math.random() * config.range) + 1;
+                answer = num1 + num2;
+            } else if (op === '-') {
+                num1 = Math.floor(Math.random() * config.range) + 5;
+                num2 = Math.floor(Math.random() * num1) + 1;
+                answer = num1 - num2;
+            } else if (op === '×') {
+                if (currentDifficulty === 'medium') {
                     num1 = [2, 3, 5][Math.floor(Math.random() * 3)];
+                    num2 = Math.floor(Math.random() * 5) + 1;
+                } else {
+                    num1 = Math.floor(Math.random() * 10) + 1;
                     num2 = Math.floor(Math.random() * 10) + 1;
-                    answer = num1 * num2;
-                } else if (op === '+') {
-                    num1 = Math.floor(Math.random() * 30) + 1;
-                    num2 = Math.floor(Math.random() * 30) + 1;
-                    answer = num1 + num2;
-                } else {
-                    num1 = Math.floor(Math.random() * 40) + 10;
-                    num2 = Math.floor(Math.random() * num1);
-                    answer = num1 - num2;
                 }
-            } else {
-                const ops = ['×', '÷'];
-                op = ops[Math.floor(Math.random() * ops.length)];
-                if (op === '×') {
-                    num1 = Math.floor(Math.random() * 12) + 1;
-                    num2 = Math.floor(Math.random() * 12) + 1;
-                    answer = num1 * num2;
-                } else {
-                    num2 = Math.floor(Math.random() * 12) + 1;
-                    answer = Math.floor(Math.random() * 12) + 1;
-                    num1 = num2 * answer;
-                }
+                answer = num1 * num2;
+            } else if (op === '÷') {
+                num2 = Math.floor(Math.random() * 10) + 1;
+                answer = Math.floor(Math.random() * 10) + 1;
+                num1 = num2 * answer;
             }
             
             return { num1, num2, op, answer };
@@ -429,8 +500,8 @@
             const gridEl = document.getElementById('grid');
             gridEl.innerHTML = '';
             
-            const isMobile = window.innerWidth <= 600;
-            const cellSize = isMobile ? 32 : 40;
+            const isMobile = window.innerWidth <= 768;
+            const cellSize = isMobile ? (window.innerWidth <= 600 ? 38 : 45) : 55;
             
             gridEl.style.gridTemplateColumns = `repeat(${size}, ${cellSize}px)`;
             
@@ -507,7 +578,10 @@
                 }, 500);
                 
                 if (mistakes >= 3) {
-                    setTimeout(() => gameOver(), 500);
+                    setTimeout(() => {
+                        alert('Too many mistakes! Try again! 😊');
+                        startGame(currentDifficulty);
+                    }, 500);
                 }
             }
         }
@@ -527,32 +601,10 @@
             clearInterval(timerInterval);
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
             document.getElementById('completionMsg').textContent = 
-                `Completed in ${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')} with ${mistakes} mistake${mistakes !== 1 ? 's' : ''}!`;
+                `Amazing! You finished in ${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')}!`;
             document.getElementById('celebration').classList.add('show');
             playSound('celebrate');
             showConfetti();
-        }
-        
-        function gameOver() {
-            clearInterval(timerInterval);
-            alert('Too many mistakes! Try again!');
-            startLevel(currentLevel);
-        }
-        
-        function nextLevel() {
-            if (currentLevel < 5) {
-                startLevel(currentLevel + 1);
-            } else {
-                alert('You completed all levels! 🎉');
-                startLevel(1);
-            }
-        }
-        
-        function showLevelSelect() {
-            const level = prompt('Choose level (1-5):', currentLevel);
-            if (level && level >= 1 && level <= 5) {
-                startLevel(parseInt(level));
-            }
         }
         
         function playSound(type) {
@@ -631,8 +683,6 @@
             
             animate();
         }
-        
-        startLevel(1);
     </script>
 </body>
 </html>
