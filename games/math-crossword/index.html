@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Math Crossword</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -15,32 +17,37 @@
             font-family: 'Fredoka', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
         .back-btn {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 12px 24px;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
             background: white;
             color: #667eea;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 100;
+            touch-action: manipulation;
         }
         .container {
             background: white;
-            border-radius: 30px;
-            padding: 30px;
+            border-radius: 20px;
+            padding: 15px;
             max-width: 900px;
             width: 100%;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-top: 50px;
         }
         h1 {
             text-align: center;
@@ -55,8 +62,8 @@
             margin-bottom: 20px;
         }
         .diff-btn {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 12px 20px;
+            font-size: 1rem;
             font-weight: 600;
             border: 3px solid #667eea;
             background: white;
@@ -64,6 +71,7 @@
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
+            touch-action: manipulation;
         }
         .diff-btn.active {
             background: #667eea;
@@ -100,15 +108,17 @@
             border-radius: 10px;
         }
         .cell {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 600;
             border-radius: 5px;
             cursor: pointer;
+            touch-action: manipulation;
+            user-select: none;
         }
         .cell.black {
             background: #333;
@@ -149,8 +159,8 @@
             margin: 0 auto 20px;
         }
         .num-btn {
-            padding: 20px;
-            font-size: 1.5rem;
+            padding: 18px;
+            font-size: 1.4rem;
             font-weight: 600;
             background: #667eea;
             color: white;
@@ -158,13 +168,15 @@
             border-radius: 15px;
             cursor: pointer;
             transition: all 0.2s;
+            touch-action: manipulation;
+            user-select: none;
         }
         .num-btn:hover {
             background: #5568d3;
-            transform: scale(1.05);
         }
         .num-btn:active {
             transform: scale(0.95);
+            background: #4a56b8;
         }
         .feedback {
             text-align: center;
@@ -223,15 +235,61 @@
             border-radius: 25px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            touch-action: manipulation;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                margin-top: 60px;
+            }
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+            .difficulty-selector {
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .diff-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            .current-clue {
+                font-size: 1.2rem;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            .cell {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+            .number-pad {
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+            .num-btn {
+                padding: 15px;
+                font-size: 1.2rem;
+            }
+            .feedback {
+                font-size: 1.4rem;
+            }
+            .celebration h2 {
+                font-size: 2rem;
+            }
+            .celebration p {
+                font-size: 1.2rem;
+            }
         }
         @media (max-width: 600px) {
             .cell {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
             }
             h1 {
-                font-size: 2rem;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -438,7 +496,12 @@
         function renderGrid(size) {
             const gridEl = document.getElementById('grid');
             gridEl.innerHTML = '';
-            gridEl.style.gridTemplateColumns = `repeat(${size}, 50px)`;
+            
+            // Adjust cell size for mobile
+            const isMobile = window.innerWidth <= 768;
+            const cellSize = isMobile ? (window.innerWidth <= 600 ? 30 : 35) : 45;
+            
+            gridEl.style.gridTemplateColumns = `repeat(${size}, ${cellSize}px)`;
             
             for (let r = 0; r < size; r++) {
                 for (let c = 0; c < size; c++) {
