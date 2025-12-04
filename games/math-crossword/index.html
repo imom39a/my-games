@@ -263,7 +263,6 @@
         let selectedCell = null;
         let startTime = null;
         let timerInterval = null;
-        let answerOptions = [];
         
         function goHome() {
             document.getElementById('difficultyScreen').style.display = 'block';
@@ -291,7 +290,6 @@
             
             grid = Array(size).fill().map(() => Array(size).fill(null));
             emptyCells = [];
-            answerOptions = [];
             
             let problemsPlaced = 0;
             let attempts = 0;
@@ -310,11 +308,6 @@
                     problemsPlaced++;
                 }
             }
-            
-            // Generate answer options
-            const correctAnswers = emptyCells.map(c => c.answer);
-            answerOptions = [...new Set(correctAnswers)];
-            answerOptions.sort((a, b) => a - b);
             
             renderGrid(size);
             renderAnswers();
@@ -410,7 +403,10 @@
             const answersEl = document.getElementById('answersGrid');
             answersEl.innerHTML = '';
             
-            answerOptions.forEach(num => {
+            const correctAnswers = emptyCells.map(c => c.answer);
+            correctAnswers.sort((a, b) => a - b);
+            
+            correctAnswers.forEach(num => {
                 const btn = document.createElement('button');
                 btn.className = 'answer-btn';
                 btn.textContent = num;
@@ -438,7 +434,7 @@
                 cellEl.classList.remove('selected');
                 cellEl.classList.add('correct');
                 cellEl.onclick = null;
-                btn.classList.add('used');
+                btn.style.display = 'none';
                 playSound('correct');
                 
                 selectedCell = null;

@@ -445,8 +445,7 @@
             
             gridEl.innerHTML = '';
             
-            // Only show the actual answers needed
-            const answers = [...new Set(problems.map(p => p.answer))].sort((a, b) => a - b);
+            const answers = problems.map(p => p.answer).sort((a, b) => a - b);
             
             answers.forEach(num => {
                 const btn = document.createElement('button');
@@ -499,6 +498,16 @@
                 cellEl.classList.add('correct');
                 cellEl.onclick = null;
                 problem.solved = true;
+                
+                // Remove the used answer button
+                const buttons = document.querySelectorAll('.num-btn');
+                for (let btn of buttons) {
+                    if (parseInt(btn.textContent) === value && !btn.classList.contains('used')) {
+                        btn.classList.add('used');
+                        btn.style.display = 'none';
+                        break;
+                    }
+                }
                 
                 playSound('correct');
                 showConfetti();
